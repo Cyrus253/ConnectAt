@@ -7,7 +7,7 @@ const upload = async (file) => {
   data.append('upload_preset', 'using-for-chat-app');
   data.append('cloud_name', 'ddo8blgoh');
 
-  const res = await fetch('https://api.cloudinary.com/v1_1/ddo8blgoh/image/upload', {
+  const res = await fetch(import.meta.env.VITE_FIREBASE_CLOUDINARY, {
     method: 'POST',
     body: data,
   });
