@@ -5,6 +5,7 @@ import { collection, query, where, getDocs, setDoc, serverTimestamp, updateDoc, 
 import { db } from '../config/firebase'
 import { AppContext } from '../context/AppContext'
 import { toast } from 'react-toastify'
+import { logout } from '../config/firebase'
 
 const LeftSideBar = () => {
   const navigate = useNavigate()
@@ -128,7 +129,7 @@ const LeftSideBar = () => {
             <div className='sub-menu absolute top-[100%] right-0 w-[130px] p-[20px] rounded-lg bg-[#077eff] text-white hidden group-hover:block'>
               <p onClick={() => navigate("/profile")} className='cursor-pointer text-[14px]'>Edit Profile </p>
               <hr className='border-none h-[1px] bg-[#a4a4a4] m-[8px_0px]' />
-              <p className='cursor-pointer text-[14px]'>Logout </p>
+              <p className='cursor-pointer text-[14px]' onClick={()=>logout()} >Logout </p>
             </div>
 
           </div>
