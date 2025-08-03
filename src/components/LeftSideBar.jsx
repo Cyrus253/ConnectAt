@@ -120,7 +120,7 @@ const LeftSideBar = () => {
   }
 
   return (
-    <div className='bg-white text-black h-[93%]'>
+    <div className='bg-white border-r-[1px] border-gray-400  text-black h-full'>
       <div className='p-[20px]'>
         <div className='flex justify-between items-center'>
           <img className='max-w-[80px]' src={userData?.avatar || assets.logo} alt="" />

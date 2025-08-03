@@ -184,7 +184,7 @@ const ChatBox = () => {
       </div>
 
       {/* Input */}
-      <div className="flex items-center p-[10px] px-[15px] gap-[12px] bg-white absolute bottom-0 left-0 right-0">
+      <div className="flex items-center rounded-4xl p-[12px] px-[15px] gap-[12px] bg-white absolute bottom-3 left-3 right-3">
         <input
           onChange={(e) => setInput(e.target.value)}
           value={input}
