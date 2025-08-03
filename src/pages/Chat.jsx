@@ -16,7 +16,7 @@ const Chat = () => {
   }, [chatData, userData]);
 
   return (
-    <div className='h-[100vh] bg-[url(./background.jpg)] bg-cover bg-center grid place-items-center'>
+    <div className='h-[100vh] bg-image bg-cover bg-center grid place-items-center'>
       {loading ? (
         <div className='flex flex-col items-center'>
           <Lottie animationData={loadingAnimation} loop={true} className="w-[500px] h-[500px]" />
