@@ -1,0 +1,121 @@
+import { useChatStore } from "../store/useChatStore";
+import { useEffect, useRef } from "react";
+import { Trash2 } from "lucide-react";
+
+import ChatHeader from "./ChatHeader";
+import MessageInput from "./MessageInput";
+import MessageSkeleton from "./skeletons/MessageSkeleton";
+import { useAuthStore } from "../store/useAuthStore";
+import { formatMessageTime } from "../lib/utils";
+
+const ChatContainer = () => {
+  const {
+    messages,
+    getMessages,
+    isMessagesLoading,
+    selectedUser,
+    subscribeToMessages,
+    unsubscribeFromMessages,
+    deleteMessage,
+  } = useChatStore();
+  const { authUser } = useAuthStore();
+  const messageEndRef = useRef(null);
+
+  // Fetch messages and subscribe to socket
+  useEffect(() => {
+    if (!selectedUser?._id) return;
+
+    getMessages(selectedUser._id);
+    subscribeToMessages();
+
+    return () => unsubscribeFromMessages();
+  }, [selectedUser?._id]);
+
+  // Scroll to bottom on new messages
+  useEffect(() => {
+    if (messageEndRef.current && messages.length) {
+      messageEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
+
+  if (isMessagesLoading) {
+    return (
+      <div className="flex-1 flex flex-col overflow-auto">
+        <ChatHeader />
+        <MessageSkeleton />
+        <MessageInput />
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex-1 flex flex-col overflow-auto">
+      <ChatHeader />
+
+      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {messages.map((message) => {
+          const isOwnMessage = message.senderId === authUser._id;
+          return (
+            <div
+              key={message._id}
+              className={`chat ${isOwnMessage ? "chat-end" : "chat-start"} group relative`}
+              ref={messageEndRef}
+            >
+              {/* Avatar */}
+              <div className="chat-image avatar">
+                <div className="size-10 rounded-full border">
+                  <img
+                    src={
+                      isOwnMessage
+                        ? authUser.profilePic || "/avatar.png"
+                        : selectedUser.profilePic || "/avatar.png"
+                    }
+                    alt="profile pic"
+                  />
+                </div>
+              </div>
+
+              {/* Timestamp */}
+              <div className="chat-header mb-1">
+                <time className="text-xs opacity-50 ml-1">
+                  {formatMessageTime(message.createdAt)}
+                </time>
+              </div>
+
+              {/* Message bubble */}
+              <div className="chat-bubble flex flex-col relative">
+                {/* Delete button (hover only for own messages) */}
+                {isOwnMessage && (
+                  <button
+                    onClick={() => {
+                      if (confirm("Delete this message?")) {
+                        deleteMessage(message._id);
+                      }
+                    }}
+                    className="absolute bottom-10 left-0 opacity-0 group-hover:opacity-100 bg-base-300 p-1 rounded-full hover:bg-red-500 hover:text-white transition-opacity duration-200"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                )}
+
+                {/* Message content */}
+                {message.image && (
+                  <img
+                    src={message.image}
+                    alt="Attachment"
+                    className="sm:max-w-[200px] rounded-md mb-2"
+                  />
+                )}
+                {message.text && <p>{message.text}</p>}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <MessageInput />
+    </div>
+  );
+};
+
+export default ChatContainer;
